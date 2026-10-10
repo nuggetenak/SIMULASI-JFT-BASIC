@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JFT-Basic 総合練習 (聴解・文字語彙・会話) — CBT Simulation App</title>
+  <meta name="description" content="Interactive practice and CBT simulation app for Japan Foundation Test for Basic Japanese (JFT-Basic) with audio listening comprehension and original test sheets.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⛩️</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="bg-pattern"></div>
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="brand" onclick="window.__app && window.__app.goHome()">
+        <span class="brand-icon">⛩️</span>
+        <div class="brand-text">
+          <h1>JFT-Basic 総合練習</h1>
+          <p>JAPAN FOUNDATION TEST FOR BASIC JAPANESE</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-pdf" class="btn-header" style="display:none;">
+          📄 問題PDF
+        </button>
+        <button id="btn-back" class="btn-header" style="display:none;">
+          ← 戻る
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main App Shell -->
+  <main class="main-content">
+    <div id="app">
+      <div style="text-align:center;padding:60px 0;color:var(--text-secondary);">
+        <p>問題を読み込み中...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- PDF Sheet Viewer Modal -->
+  <div id="pdf-modal" class="modal-backdrop">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div id="pdf-modal-title" class="modal-title">問題シート PDF</div>
+        <button class="modal-close-btn" onclick="closePdfModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <iframe id="pdf-frame" src="about:blank" title="JFT Basic PDF Viewer"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/questions.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

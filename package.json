@@ -1,0 +1,21 @@
+{
+  "name": "jft-basic-practice",
+  "version": "1.0.0",
+  "description": "Interactive JFT-Basic (Japan Foundation Test) CBT simulation app with listening comprehension, vocabulary, and conversation practice",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "jft",
+    "japanese",
+    "nihongo",
+    "test",
+    "practice",
+    "choukai",
+    "listening"
+  ],
+  "author": "nuggetenak",
+  "license": "MIT"
+}
