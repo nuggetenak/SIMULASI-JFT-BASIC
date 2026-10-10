@@ -2,11 +2,11 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JFT-Basic 総合練習 (聴解・文字語彙・会話) — CBT Simulation App</title>
-  <meta name="description" content="Interactive practice and CBT simulation app for Japan Foundation Test for Basic Japanese (JFT-Basic) with audio listening comprehension and original test sheets.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>JFT-Basic 総合練習 (聴解・文字語彙・会話) — CBT Simulation</title>
+  <meta name="description" content="Interactive CBT simulation and practice app for Japan Foundation Test for Basic Japanese (JFT-Basic) with audio listening comprehension and original test sheets.">
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Noto Sans JP -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -25,7 +25,7 @@
         <span class="brand-icon">⛩️</span>
         <div class="brand-text">
           <h1>JFT-Basic 総合練習</h1>
-          <p>JAPAN FOUNDATION TEST FOR BASIC JAPANESE</p>
+          <p>JAPAN FOUNDATION TEST PRACTICE</p>
         </div>
       </div>
       <div class="header-actions">
@@ -39,24 +39,43 @@
     </div>
   </header>
 
-  <!-- Main App Shell -->
+  <!-- Main Content Shell -->
   <main class="main-content">
     <div id="app">
-      <div style="text-align:center;padding:60px 0;color:var(--text-secondary);">
+      <div style="text-align:center;padding:60px 0;color:var(--text-muted);font-weight:700;">
         <p>問題を読み込み中...</p>
       </div>
     </div>
   </main>
 
-  <!-- PDF Sheet Viewer Modal -->
-  <div id="pdf-modal" class="modal-backdrop">
-    <div class="modal-window">
+  <!-- Question Palette Modal / Drawer (問題一覧) -->
+  <div id="palette-modal" class="palette-modal-backdrop" onclick="closePalette()">
+    <div class="palette-sheet" onclick="event.stopPropagation()">
+      <div class="palette-header">
+        <h3>📑 問題一覧 (Questions)</h3>
+        <button class="modal-close-btn" style="color:var(--text-main);" onclick="closePalette()">&times;</button>
+      </div>
+      <div id="palette-grid" class="palette-grid"></div>
+    </div>
+  </div>
+
+  <!-- Image Lightbox / Fullscreen Zoom Modal -->
+  <div id="lightbox-modal" class="lightbox-backdrop" onclick="closeLightbox()">
+    <div class="lightbox-box" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+      <img id="lightbox-img" src="" alt="Zoomed Question Image" class="lightbox-img">
+    </div>
+  </div>
+
+  <!-- PDF Test Sheet Modal -->
+  <div id="pdf-modal" class="modal-backdrop" onclick="closePdfModal()">
+    <div class="modal-window" onclick="event.stopPropagation()">
       <div class="modal-header">
         <div id="pdf-modal-title" class="modal-title">問題シート PDF</div>
         <button class="modal-close-btn" onclick="closePdfModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <iframe id="pdf-frame" src="about:blank" title="JFT Basic PDF Viewer"></iframe>
+        <iframe id="pdf-frame" src="about:blank" title="JFT Basic PDF Sheet"></iframe>
       </div>
     </div>
   </div>
