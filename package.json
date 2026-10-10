@@ -17,5 +17,8 @@
     "listening"
   ],
   "author": "nuggetenak",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^2.28.0"
+  }
 }

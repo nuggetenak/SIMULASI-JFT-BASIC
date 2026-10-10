@@ -1,6 +1,4 @@
-// JFT Basic Interactive Practice - Complete Question & Media Database
-// Auto-generated from extracted PDFs and high-fidelity assets
-
+// JFT-Basic Practice Questions & Media Database (Updated with Audited Audio)
 const questionSets = [
   {
     "id": 1,
@@ -384,17 +382,22 @@ const questionSets = [
           {
             "mp3": "audio/set1/soal_1.mp3",
             "m4a": "audio/set1/soal_1.m4a",
-            "label": "問題 1 (SOAL 1)"
+            "label": "問題 1 (赤ちゃん誕生)"
           },
           {
             "mp3": "audio/set1/soal_2.mp3",
             "m4a": "audio/set1/soal_2.m4a",
-            "label": "問題 2-3 (SOAL 2)"
+            "label": "問題 2 (ベトナムのお土産)"
           },
           {
             "mp3": "audio/set1/soal_3.mp3",
             "m4a": "audio/set1/soal_3.m4a",
-            "label": "問題 4-5 (SOAL 3)"
+            "label": "問題 3 (ミャンマーの手作りカバン)"
+          },
+          {
+            "mp3": "audio/set1/soal_4.mp3",
+            "m4a": "audio/set1/soal_4.m4a",
+            "label": "問題 4-5 (二日酔いとアドバイス)"
           }
         ],
         "questions": [
@@ -445,7 +448,7 @@ const questionSets = [
           },
           {
             "id": 3,
-            "audioIndex": 1,
+            "audioIndex": 2,
             "promptImage": "images/set1/p13_img4_img_p12_2.png",
             "promptText": "だれにもらいましたか。",
             "options": [
@@ -466,7 +469,7 @@ const questionSets = [
           },
           {
             "id": 4,
-            "audioIndex": 2,
+            "audioIndex": 3,
             "promptImage": "images/set1/p14_img3_img_p13_1.png",
             "promptText": "どのように体の調子が悪いですか？",
             "options": [
@@ -487,7 +490,7 @@ const questionSets = [
           },
           {
             "id": 5,
-            "audioIndex": 2,
+            "audioIndex": 3,
             "promptImage": "images/set1/p14_img4_img_p13_2.png",
             "promptText": "どんなアドバイスでしたか？",
             "options": [
@@ -923,7 +926,27 @@ const questionSets = [
           {
             "mp3": "audio/set2/soal_1.mp3",
             "m4a": "audio/set2/soal_1.m4a",
-            "label": "問題 1-5 全体 (SOAL 1)"
+            "label": "問題 1 (和太鼓の趣味)"
+          },
+          {
+            "mp3": "audio/set2/soal_2.mp3",
+            "m4a": "audio/set2/soal_2.m4a",
+            "label": "問題 2 (スーパーの買い物)"
+          },
+          {
+            "mp3": "audio/set2/soal_3.mp3",
+            "m4a": "audio/set2/soal_3.m4a",
+            "label": "問題 3 (週末の海釣り)"
+          },
+          {
+            "mp3": "audio/set2/soal_4.mp3",
+            "m4a": "audio/set2/soal_4.m4a",
+            "label": "問題 4 (持ち物の確認)"
+          },
+          {
+            "mp3": "audio/set2/soal_5.mp3",
+            "m4a": "audio/set2/soal_5.m4a",
+            "label": "問題 5 (日本のお菓子)"
           }
         ],
         "questions": [
@@ -952,7 +975,7 @@ const questionSets = [
           },
           {
             "id": 2,
-            "audioIndex": 0,
+            "audioIndex": 1,
             "promptText": "何番の絵ですか？ 音声を聞いて選んでください。",
             "options": [
               {
@@ -975,7 +998,7 @@ const questionSets = [
           },
           {
             "id": 3,
-            "audioIndex": 0,
+            "audioIndex": 2,
             "promptImage": "images/set2/p15_img3_img_p14_1.png",
             "promptText": "音声を聞いて正しい絵を選んでください。",
             "options": [
@@ -999,7 +1022,7 @@ const questionSets = [
           },
           {
             "id": 4,
-            "audioIndex": 0,
+            "audioIndex": 3,
             "promptImage": "images/set2/p16_img3_img_p15_1.png",
             "promptText": "音声を聞いて正しい絵を選んでください。",
             "options": [
@@ -1023,7 +1046,7 @@ const questionSets = [
           },
           {
             "id": 5,
-            "audioIndex": 0,
+            "audioIndex": 4,
             "promptImage": "images/set2/p17_img3_img_p16_1.png",
             "promptText": "味はどうでしたか？",
             "options": [
@@ -1429,17 +1452,27 @@ const questionSets = [
           {
             "mp3": "audio/set3/soal_1.mp3",
             "m4a": "audio/set3/soal_1.m4a",
-            "label": "問題 1-2 (SOAL 1)"
+            "label": "問題 1 (エアコン)"
           },
           {
             "mp3": "audio/set3/soal_2.mp3",
             "m4a": "audio/set3/soal_2.m4a",
-            "label": "問題 3-4 (SOAL 2)"
+            "label": "問題 2 (水を止める)"
           },
           {
             "mp3": "audio/set3/soal_3.mp3",
             "m4a": "audio/set3/soal_3.m4a",
-            "label": "問題 5 (SOAL 3)"
+            "label": "問題 3 (台風の接近)"
+          },
+          {
+            "mp3": "audio/set3/soal_4.mp3",
+            "m4a": "audio/set3/soal_4.m4a",
+            "label": "問題 4 (スマホの充電)"
+          },
+          {
+            "mp3": "audio/set3/soal_5.mp3",
+            "m4a": "audio/set3/soal_5.m4a",
+            "label": "問題 5 (地震の対応)"
           }
         ],
         "questions": [
@@ -1466,7 +1499,7 @@ const questionSets = [
           },
           {
             "id": 2,
-            "audioIndex": 0,
+            "audioIndex": 1,
             "promptImage": "images/set3/p12_img4_img_p11_2.png",
             "promptText": "音声を聞いて選んでください。",
             "options": [
@@ -1487,7 +1520,7 @@ const questionSets = [
           },
           {
             "id": 3,
-            "audioIndex": 1,
+            "audioIndex": 2,
             "promptImage": "images/set3/p13_img3_img_p12_1.png",
             "promptText": "音声を聞いて選んでください。",
             "options": [
@@ -1508,7 +1541,7 @@ const questionSets = [
           },
           {
             "id": 4,
-            "audioIndex": 1,
+            "audioIndex": 3,
             "promptImage": "images/set3/p13_img4_img_p12_2.png",
             "promptText": "音声を聞いて選んでください。",
             "options": [
@@ -1529,7 +1562,7 @@ const questionSets = [
           },
           {
             "id": 5,
-            "audioIndex": 2,
+            "audioIndex": 4,
             "promptImage": "images/set3/p14_img3_img_p13_1.png",
             "promptText": "正しい絵を選んでください。",
             "options": [
@@ -1938,17 +1971,27 @@ const questionSets = [
           {
             "mp3": "audio/set4/soal_1.mp3",
             "m4a": "audio/set4/soal_1.m4a",
-            "label": "問題 1-2 (SOAL 1)"
+            "label": "問題 1 (図書館の貸出期間)"
           },
           {
             "mp3": "audio/set4/soal_2.mp3",
             "m4a": "audio/set4/soal_2.m4a",
-            "label": "問題 3-4 (SOAL 2)"
+            "label": "問題 2 (利用料金)"
           },
           {
             "mp3": "audio/set4/soal_3.mp3",
             "m4a": "audio/set4/soal_3.m4a",
-            "label": "問題 5 (SOAL 3)"
+            "label": "問題 3 (お祭りの時間)"
+          },
+          {
+            "mp3": "audio/set4/soal_4.mp3",
+            "m4a": "audio/set4/soal_4.m4a",
+            "label": "問題 4 (町の紹介)"
+          },
+          {
+            "mp3": "audio/set4/soal_5.mp3",
+            "m4a": "audio/set4/soal_5.m4a",
+            "label": "問題 5 (鍋料理の具材)"
           }
         ],
         "questions": [
@@ -1975,7 +2018,7 @@ const questionSets = [
           },
           {
             "id": 2,
-            "audioIndex": 0,
+            "audioIndex": 1,
             "promptImage": "images/set4/p12_img4_img_p11_2.png",
             "promptText": "音声を聞いて選んでください。",
             "options": [
@@ -1996,7 +2039,7 @@ const questionSets = [
           },
           {
             "id": 3,
-            "audioIndex": 1,
+            "audioIndex": 2,
             "promptImage": "images/set4/p13_img3_img_p12_1.png",
             "promptText": "音声を聞いて選んでください。",
             "options": [
@@ -2017,7 +2060,7 @@ const questionSets = [
           },
           {
             "id": 4,
-            "audioIndex": 1,
+            "audioIndex": 3,
             "promptImage": "images/set4/p13_img4_img_p12_2.png",
             "promptText": "音声を聞いて選んでください。",
             "options": [
@@ -2038,7 +2081,7 @@ const questionSets = [
           },
           {
             "id": 5,
-            "audioIndex": 2,
+            "audioIndex": 4,
             "promptImage": "images/set4/p14_img3_img_p13_1.png",
             "promptText": "音声を聞いて選んでください。",
             "options": [

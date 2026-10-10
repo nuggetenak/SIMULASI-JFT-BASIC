@@ -1,5 +1,5 @@
 // JFT-Basic CBT Interactive Practice Application
-// Optimized for all devices (Mobile, Tablet, Desktop)
+// Optimized with Custom Touch Audio Player, CBT Question Flagging, and Safe Area Insets
 
 (function () {
   'use strict';
@@ -10,9 +10,14 @@
   let currentSectionId = null;
   let currentQuestionIdx = 0;
   let userAnswers = [];
+  let flaggedQuestions = {}; // { questionIdx: true }
   let isPracticeMode = true; // true: practice mode with feedback, false: exam mode
   let isAnswered = false;
   let currentPlaybackRate = 1.0;
+
+  // Active Audio Instance
+  let currentAudio = null;
+  let audioUpdateInterval = null;
 
   // Web Audio Context for gentle SFX
   let audioCtx = null;
@@ -90,12 +95,32 @@
   const lightboxImg = document.getElementById('lightbox-img');
   const paletteModal = document.getElementById('palette-modal');
 
+  // Stop currently playing audio
+  function stopCurrentAudio() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+    if (audioUpdateInterval) {
+      clearInterval(audioUpdateInterval);
+      audioUpdateInterval = null;
+    }
+  }
+
+  // Format seconds into MM:SS
+  function formatTime(sec) {
+    if (isNaN(sec) || sec < 0) return '00:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+  }
+
   // Navigation
   function navigate(screen, params = {}) {
+    stopCurrentAudio();
     currentScreen = screen;
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Manage in-quiz body class for bottom bar spacing
     if (screen === 'quiz') {
       document.body.classList.add('in-quiz');
     } else {
@@ -123,6 +148,7 @@
       currentSectionId = params.sectionId;
       currentQuestionIdx = 0;
       userAnswers = [];
+      flaggedQuestions = {};
       isAnswered = false;
       renderQuiz();
     } else if (screen === 'results') {
@@ -176,14 +202,31 @@
     const section = set.sections.find(s => s.id === currentSectionId);
     if (!section) return;
 
+    let ansCount = 0;
+    let flagCount = 0;
+    section.questions.forEach((_, idx) => {
+      if (userAnswers[idx] !== undefined) ansCount++;
+      if (flaggedQuestions[idx]) flagCount++;
+    });
+
+    const legend = document.getElementById('palette-legend');
+    if (legend) {
+      legend.innerHTML = `
+        <span>✅ 回答済: ${ansCount}問</span>
+        <span>📌 マーク: ${flagCount}問</span>
+        <span>⚪ 未回答: ${section.questions.length - ansCount}問</span>
+      `;
+    }
+
     const grid = document.getElementById('palette-grid');
     if (!grid) return;
 
     grid.innerHTML = section.questions.map((q, idx) => {
       const isAns = userAnswers[idx] !== undefined;
       const isCur = idx === currentQuestionIdx;
+      const isFlag = !!flaggedQuestions[idx];
       return `
-        <button class="palette-btn ${isCur ? 'current' : ''} ${isAns ? 'answered' : ''}" onclick="window.__app.jumpToQuestion(${idx})">
+        <button class="palette-btn ${isCur ? 'current' : ''} ${isAns ? 'answered' : ''} ${isFlag ? 'flagged' : ''}" onclick="window.__app.jumpToQuestion(${idx})">
           ${idx + 1}
         </button>
       `;
@@ -207,12 +250,7 @@
     } else if (e.key === 'ArrowLeft') {
       handlePrevQuestion();
     } else if (e.code === 'Space') {
-      const audio = document.getElementById('quiz-audio');
-      if (audio) {
-        e.preventDefault();
-        if (audio.paused) audio.play();
-        else audio.pause();
-      }
+      toggleAudioPlay();
     }
   });
 
@@ -350,6 +388,8 @@
   // SCREEN 3: QUIZ VIEW
   // ==========================================
   function renderQuiz() {
+    stopCurrentAudio();
+
     const set = questionSets.find(s => s.id === currentSetId);
     if (!set) return;
     const section = set.sections.find(s => s.id === currentSectionId);
@@ -359,28 +399,43 @@
     const totalQ = section.questions.length;
     const pct = ((currentQuestionIdx) / totalQ) * 100;
     const isAnsweredCurrent = userAnswers[currentQuestionIdx] !== undefined;
+    const isFlagged = !!flaggedQuestions[currentQuestionIdx];
 
-    // Audio Markup for Listening section
+    // Audio Markup with Custom Player
     let audioMarkup = '';
     if (section.audioFiles && question.audioIndex !== undefined) {
       const audioObj = section.audioFiles[question.audioIndex];
       audioMarkup = `
-        <div class="audio-card">
-          <div class="audio-header">
-            <div class="audio-title-tag">
+        <div class="custom-audio-player">
+          <div class="player-top-row">
+            <div class="player-label">
               <span>🔊</span>
               <span>${audioObj.label || '聴解 音声 (Audio)'}</span>
             </div>
-            <div class="audio-speed-chips">
+            <div class="player-speeds">
               <button class="speed-chip ${currentPlaybackRate === 0.8 ? 'active' : ''}" onclick="window.__app.setAudioSpeed(0.8)">0.8x</button>
               <button class="speed-chip ${currentPlaybackRate === 1.0 ? 'active' : ''}" onclick="window.__app.setAudioSpeed(1.0)">1.0x</button>
               <button class="speed-chip ${currentPlaybackRate === 1.2 ? 'active' : ''}" onclick="window.__app.setAudioSpeed(1.2)">1.2x</button>
             </div>
           </div>
-          <audio id="quiz-audio" class="audio-player-element" controls preload="auto">
+          <div class="player-controls-row">
+            <button id="btn-audio-play" class="btn-play-pause" onclick="window.__app.toggleAudioPlay()">
+              ▶
+            </button>
+            <div class="player-scrubber-box">
+              <input id="audio-scrubber" type="range" class="scrubber-slider" min="0" max="100" value="0" oninput="window.__app.seekAudio(this.value)">
+              <div class="time-row">
+                <span id="audio-cur-time">00:00</span>
+                <span id="audio-dur-time">--:--</span>
+              </div>
+            </div>
+            <button class="btn-replay-icon" title="最初から再生" onclick="window.__app.replayAudio()">
+              ↺
+            </button>
+          </div>
+          <audio id="quiz-audio" preload="auto" style="display:none;">
             <source src="${audioObj.mp3}" type="audio/mpeg">
             <source src="${audioObj.m4a}" type="audio/mp4">
-            ブラウザが音声再生に対応していません。
           </audio>
         </div>
       `;
@@ -411,21 +466,19 @@
 
     const html = `
       <div class="quiz-view">
-        ${!isPracticeMode ? `
-          <div class="exam-banner">
-            <span>⏱️ 本番模試モード中（テスト終了時にスコア採点）</span>
-            <span>問 ${currentQuestionIdx + 1} / ${totalQ}</span>
-          </div>
-        ` : ''}
-
         <div class="quiz-topbar">
           <div class="quiz-badge-wrap">
             <span class="quiz-badge">${section.icon} ${section.nameJp}</span>
             <span class="quiz-counter">第 ${question.id} 問 (問 ${currentQuestionIdx + 1} / ${totalQ})</span>
           </div>
-          <button class="btn-palette-toggle" onclick="window.__app.openPalette()">
-            📑 問題一覧
-          </button>
+          <div class="top-actions-wrap">
+            <button class="btn-flag ${isFlagged ? 'active' : ''}" onclick="window.__app.toggleFlag()">
+              ${isFlagged ? '📌 マーク済' : '📌 マーク'}
+            </button>
+            <button class="btn-palette-toggle" onclick="window.__app.openPalette()">
+              📑 問題一覧
+            </button>
+          </div>
         </div>
 
         <div class="progress-track">
@@ -478,7 +531,7 @@
             </button>
             <div class="bottom-info-pill" onclick="window.__app.openPalette()">
               <span>📑</span>
-              <span>問 ${currentQuestionIdx + 1} / ${totalQ}</span>
+              <span>問 ${currentQuestionIdx + 1} / ${totalQ} ${isFlagged ? '📌' : ''}</span>
             </div>
             <button id="btn-next" class="btn-nav-touch btn-next" onclick="window.__app.nextQuestion()">
               ${nextBtnLabel}
@@ -490,15 +543,82 @@
 
     appContainer.innerHTML = html;
 
-    // Apply speed if audio exists
-    const audio = document.getElementById('quiz-audio');
-    if (audio) {
-      audio.playbackRate = currentPlaybackRate;
-    }
+    // Attach custom audio listener
+    initCustomAudio();
 
     // Restore previous selection if answered
     if (isAnsweredCurrent) {
       restoreUserAnswer(question);
+    }
+  }
+
+  function initCustomAudio() {
+    const audio = document.getElementById('quiz-audio');
+    if (!audio) return;
+
+    currentAudio = audio;
+    audio.playbackRate = currentPlaybackRate;
+
+    const playBtn = document.getElementById('btn-audio-play');
+    const scrubber = document.getElementById('audio-scrubber');
+    const curTimeSpan = document.getElementById('audio-cur-time');
+    const durTimeSpan = document.getElementById('audio-dur-time');
+
+    audio.addEventListener('loadedmetadata', () => {
+      if (durTimeSpan) durTimeSpan.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      if (!audio.duration) return;
+      const progress = (audio.currentTime / audio.duration) * 100;
+      if (scrubber) scrubber.value = progress;
+      if (curTimeSpan) curTimeSpan.textContent = formatTime(audio.currentTime);
+    });
+
+    audio.addEventListener('ended', () => {
+      if (playBtn) playBtn.textContent = '▶';
+    });
+  }
+
+  function toggleAudioPlay() {
+    if (!currentAudio) return;
+    const playBtn = document.getElementById('btn-audio-play');
+    if (currentAudio.paused) {
+      currentAudio.play();
+      if (playBtn) playBtn.textContent = '⏸';
+    } else {
+      currentAudio.pause();
+      if (playBtn) playBtn.textContent = '▶';
+    }
+  }
+
+  function replayAudio() {
+    if (!currentAudio) return;
+    currentAudio.currentTime = 0;
+    currentAudio.play();
+    const playBtn = document.getElementById('btn-audio-play');
+    if (playBtn) playBtn.textContent = '⏸';
+  }
+
+  function seekAudio(percent) {
+    if (!currentAudio || !currentAudio.duration) return;
+    currentAudio.currentTime = (percent / 100) * currentAudio.duration;
+  }
+
+  function toggleFlag() {
+    flaggedQuestions[currentQuestionIdx] = !flaggedQuestions[currentQuestionIdx];
+    const flagBtn = document.querySelector('.btn-flag');
+    if (flagBtn) {
+      const active = !!flaggedQuestions[currentQuestionIdx];
+      flagBtn.classList.toggle('active', active);
+      flagBtn.innerHTML = active ? '📌 マーク済' : '📌 マーク';
+    }
+    const bottomPill = document.querySelector('.bottom-info-pill');
+    if (bottomPill) {
+      const set = questionSets.find(s => s.id === currentSetId);
+      const section = set.sections.find(s => s.id === currentSectionId);
+      const isFlag = !!flaggedQuestions[currentQuestionIdx];
+      bottomPill.innerHTML = `<span>📑</span> <span>問 ${currentQuestionIdx + 1} / ${section.questions.length} ${isFlag ? '📌' : ''}</span>`;
     }
   }
 
@@ -736,6 +856,10 @@
     jumpToQuestion: jumpToQuestion,
     openPalette: openPalette,
     openLightbox: openLightbox,
+    toggleFlag: toggleFlag,
+    toggleAudioPlay: toggleAudioPlay,
+    replayAudio: replayAudio,
+    seekAudio: seekAudio,
     goHome: () => navigate('home'),
     goSections: () => navigate('sections', { setId: currentSetId }),
     setMode: (mode) => {
@@ -744,8 +868,7 @@
     },
     setAudioSpeed: (speed) => {
       currentPlaybackRate = speed;
-      const audio = document.getElementById('quiz-audio');
-      if (audio) audio.playbackRate = speed;
+      if (currentAudio) currentAudio.playbackRate = speed;
       document.querySelectorAll('.speed-chip').forEach(btn => {
         btn.classList.toggle('active', parseFloat(btn.textContent) === speed);
       });
