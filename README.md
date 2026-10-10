@@ -4,6 +4,8 @@ A modern, interactive Computer-Based Testing (CBT) practice web application for 
 
 Designed to mirror the official JFT-Basic test environment with audio playback, illustrated question prompts, picture-based options, and instant scoring.
 
+🌐 **Live Demo**: [https://nuggetenak.github.io/SIMULASI-JFT-BASIC/](https://nuggetenak.github.io/SIMULASI-JFT-BASIC/)
+
 ---
 
 ## ✨ Features
